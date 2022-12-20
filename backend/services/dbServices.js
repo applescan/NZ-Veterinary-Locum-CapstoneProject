@@ -1,7 +1,6 @@
 const doctorsModels = require('../models/doctorsModels.js');
 const bcrypt = require('bcryptjs');
 
-
 // all get functions
 async function fetchDoctors(req, res) {
     const doctors = await doctorsModels.find();
@@ -109,7 +108,7 @@ async function loginDoctor(req, res) {
 
                 //if both match than you can do anything
                 if (data) {
-                    return res.status(200).json({ msg: "Login success" }) //will send to the homepage with special profile page
+                    return res.status(200).json({ msg: "Login success", email: email, authenticated: true }) //will send to the homepage with special profile page
                 } else {
                     return res.status(401).json({ msg: "Invalid credential" })
                 }

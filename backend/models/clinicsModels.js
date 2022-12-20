@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const clinicsSchema = new mongoose.Schema({
     business_name: {
         type: String,
-        required: false,
+        required: true,
     },
     specialities: {
         type: String,
@@ -11,7 +11,7 @@ const clinicsSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: false,
+        required: true,
     },
     phone: {
         type: String,
@@ -19,7 +19,7 @@ const clinicsSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: false,
+        required: true,
     },
     address: {
         type: String,

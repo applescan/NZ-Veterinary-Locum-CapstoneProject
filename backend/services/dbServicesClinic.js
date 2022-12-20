@@ -1,4 +1,5 @@
 const clinicsModels = require('../models/clinicsModels.js');
+const bcrypt = require('bcryptjs');
 
 //all get functions
 async function fetchClinics(req, res) {
@@ -15,7 +16,7 @@ async function fetchClinics(req, res) {
 
 async function fetchClinicsCity(req, res) {
     let address = req.params.address
-    const clinics = await clinicsModels.find({address: {$regex: address, $options: 'i'}}) // i for case insensitive
+    const clinics = await clinicsModels.find({ address: { $regex: address, $options: 'i' } }) // i for case insensitive
     console.log(clinics)
     try {
         res.send(clinics);
@@ -52,26 +53,69 @@ async function updateClinic(req, res) {
     }
 }
 
-async function addClinics(req, res) {
-    const clinics = new clinicsModels({
-        business_name: req?.body?.business_name,
-        specialities: req?.body?.specialities,
-        email: req?.body?.email,
-        phone: req?.body?.phone,
-        password: req?.body?.password,
-        address: req?.body?.address,
-        hours: req?.body?.hours,
-        imageKey: "clinicDefault.jpg"
-    })
 
-    try {
-        const dataToSave = await clinics.save();
-        res.status(200).json(dataToSave)
-        console.log(dataToSave)
+//post functions
+async function addClinics(req, res) {
+
+    //bcrypt password hashing
+    //generate and use salt for extra security
+    const salt = await bcrypt.genSalt()
+    const hash = await bcrypt.hash(req.body.password, salt)
+
+    // Check if this user already exisits
+    let clinics = await clinicsModels.findOne({ email: req.body.email });
+    if (clinics) {
+        return res.status(400).send('That user already exisits!');
+    } else {
+        // Insert the new user if they do not exist yet
+        clinics = new clinicsModels({
+            first_name: req?.body?.first_name,
+            last_name: req?.body?.last_name,
+            specialities: req?.body?.specialities,
+            email: req?.body?.email,
+            phone: req?.body?.phone,
+            password: hash,
+            city: req?.body?.city,
+            license: req?.body?.license,
+            availability: req?.body?.availability,
+            work_requirement: req?.body?.work_requirement,
+            imageKey: "default.jpg"
+        });
+        await clinics.save();
+        res.send(clinics);
     }
-    catch (error) {
-        res.status(400).json({ message: error.message })
-    }
+}
+
+//Post request for login
+async function loginClinic(req, res) {
+    //email and password
+    const email = req.body.email
+    const password = req.body.password
+
+    //find user exist or not
+    clinicsModels.findOne({ email })
+        .then(clinics => {
+            //if user not exist than return status 400
+            if (!clinics) return res.status(400).json({ msg: "User does not exist" })
+
+            //if user exist than compare password
+            //password comes from the user
+            //doctors.password comes from the database
+            bcrypt.compare(password, clinics.password, (err, data) => {
+                //if error then throw an error
+                if (err) throw err
+
+                //if both match than you can do anything
+                if (data) {
+                    return res.status(200).json({ msg: "Login success", email: email, authenticated: true }) //will send to the homepage with special profile page
+                } else {
+                    return res.status(401).json({ msg: "Invalid credential" })
+                }
+
+            })
+
+        })
+
 }
 
 module.exports = {
@@ -79,5 +123,6 @@ module.exports = {
     fetchClinicsCity,
     deleteClinicsId,
     updateClinic,
-    addClinics
+    addClinics,
+    loginClinic
 }

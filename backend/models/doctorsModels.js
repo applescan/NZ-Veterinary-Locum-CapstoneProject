@@ -7,7 +7,7 @@ const doctorsSchema = new mongoose.Schema({
     },
     first_name: {
         type: String,
-        required: false,
+        required: true,
     },
     last_name: {
         type: String,
@@ -19,7 +19,7 @@ const doctorsSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: false,
+        required: true,
     },
     phone: {
         type: String,
@@ -27,7 +27,7 @@ const doctorsSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: false,
+        required: true,
     },
     city: {
         type: String,

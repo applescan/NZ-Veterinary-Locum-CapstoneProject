@@ -22,4 +22,8 @@ router.post(`/add`, function (req, res) {
     clinicsController.addClinics(req, res)
 })
 
+router.post(`/login`, function (req, res) { 
+    clinicsController.loginClinic(req, res)
+})
+
 module.exports = router;
