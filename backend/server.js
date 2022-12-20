@@ -9,6 +9,7 @@ const session = require("express-session")
 const doctorsRoute = require('./routes/doctorsRoute');
 const clinicsRoute = require('./routes/clinicsRoute');
 const jobsRoute = require('./routes/jobsRoute');
+const bcrypt = require('bcryptjs')
 
 app.use(
   '/api-docs',

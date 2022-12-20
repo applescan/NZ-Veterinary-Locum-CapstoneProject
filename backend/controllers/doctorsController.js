@@ -15,11 +15,15 @@ const updateDoctor = async (req, res) => {
 const addDoctor = async (req, res) => {  
     let doctors = await getDoctorsData.addDoctor(req, res)
 }
+const loginDoctor = async (req, res) => {  
+    let doctors = await getDoctorsData.loginDoctor(req, res)
+}
 
 module.exports = {
     fetchDoctors,
     fetchDoctorsCity,
     deleteDoctorsId,
     updateDoctor,
-    addDoctor
+    addDoctor,
+    loginDoctor
 }

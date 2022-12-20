@@ -1,4 +1,5 @@
 const doctorsModels = require('../models/doctorsModels.js');
+const bcrypt = require('bcryptjs');
 
 
 // all get functions
@@ -16,7 +17,7 @@ async function fetchDoctors(req, res) {
 
 async function fetchDoctorsCity(req, res) {
     let city = req.params.city
-    const doctors = await doctorsModels.find({city: {$regex: city, $options: 'i'}}) // i for case insensitive
+    const doctors = await doctorsModels.find({ city: { $regex: city, $options: 'i' } }) // i for case insensitive
     console.log(doctors)
     try {
         res.send(doctors);
@@ -57,14 +58,19 @@ async function updateDoctor(req, res) {
 
 //post functions
 async function addDoctor(req, res) {
-    console.log(req.body)
+
+    //bcrypt password hashing
+    //generate and use salt for extra security
+    const salt = await bcrypt.genSalt()
+    const hash = await bcrypt.hash(req.body.password, salt)
+
     const doctors = new doctorsModels({
         first_name: req?.body?.first_name,
         last_name: req?.body?.last_name,
         specialities: req?.body?.specialities,
         email: req?.body?.email,
         phone: req?.body?.phone,
-        password: req?.body?.password,
+        password: hash,
         city: req?.body?.city,
         license: req?.body?.license,
         availability: req?.body?.availability,
@@ -82,10 +88,44 @@ async function addDoctor(req, res) {
     }
 }
 
+
+//Post request for login
+async function loginDoctor(req, res) {
+    //email and password
+    const email = req.body.email
+    const password = req.body.password
+
+    //find user exist or not
+    doctorsModels.findOne({ email })
+        .then(doctors => {
+            //if user not exist than return status 400
+            if (!doctors) return res.status(400).json({ msg: "User does not exist" })
+
+            //if user exist than compare password
+            //password comes from the user
+            //doctors.password comes from the database
+            bcrypt.compare(password, doctors.password, (err, data) => {
+                //if error than throw error
+                if (err) throw err
+
+                //if both match than you can do anything
+                if (data) {
+                    return res.status(200).json({ msg: "Login success" }) //will send to the homepage with special profile page
+                } else {
+                    return res.status(401).json({ msg: "Invalid credential" })
+                }
+
+            })
+
+        })
+
+}
+
 module.exports = {
     fetchDoctors,
     fetchDoctorsCity,
     deleteDoctorsId,
     updateDoctor,
-    addDoctor
+    addDoctor,
+    loginDoctor
 }

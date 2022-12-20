@@ -22,4 +22,8 @@ router.post(`/add`, function (req, res) {
     doctorsController.addDoctor(req, res)
 })
 
+router.post(`/login`, function (req, res) { 
+    doctorsController.loginDoctor(req, res)
+})
+
 module.exports = router;
