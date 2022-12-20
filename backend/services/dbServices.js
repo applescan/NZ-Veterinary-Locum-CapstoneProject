@@ -64,30 +64,29 @@ async function addDoctor(req, res) {
     const salt = await bcrypt.genSalt()
     const hash = await bcrypt.hash(req.body.password, salt)
 
-    const doctors = new doctorsModels({
-        first_name: req?.body?.first_name,
-        last_name: req?.body?.last_name,
-        specialities: req?.body?.specialities,
-        email: req?.body?.email,
-        phone: req?.body?.phone,
-        password: hash,
-        city: req?.body?.city,
-        license: req?.body?.license,
-        availability: req?.body?.availability,
-        work_requirement: req?.body?.work_requirement,
-        imageKey: "default.jpg"
-    })
-
-    try {
-        const dataToSave = await doctors.save();
-        res.status(200).json(dataToSave)
-        console.log(dataToSave)
-    }
-    catch (error) {
-        res.status(400).json({ message: error.message })
+    // Check if this user already exisits
+    let doctors = await doctorsModels.findOne({ email: req.body.email });
+    if (doctors) {
+        return res.status(400).send('That user already exisits!');
+    } else {
+        // Insert the new user if they do not exist yet
+        doctors = new doctorsModels({
+            first_name: req?.body?.first_name,
+            last_name: req?.body?.last_name,
+            specialities: req?.body?.specialities,
+            email: req?.body?.email,
+            phone: req?.body?.phone,
+            password: hash,
+            city: req?.body?.city,
+            license: req?.body?.license,
+            availability: req?.body?.availability,
+            work_requirement: req?.body?.work_requirement,
+            imageKey: "default.jpg"
+        });
+        await doctors.save();
+        res.send(doctors);
     }
 }
-
 
 //Post request for login
 async function loginDoctor(req, res) {
@@ -105,7 +104,7 @@ async function loginDoctor(req, res) {
             //password comes from the user
             //doctors.password comes from the database
             bcrypt.compare(password, doctors.password, (err, data) => {
-                //if error than throw error
+                //if error then throw an error
                 if (err) throw err
 
                 //if both match than you can do anything
