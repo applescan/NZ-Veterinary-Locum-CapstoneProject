@@ -1,6 +1,7 @@
 const doctorsModels = require('../models/doctorsModels.js');
 
 
+// all get functions
 async function fetchDoctors(req, res) {
     const doctors = await doctorsModels.find();
     for (let i = 0; i < doctors.length; i++) {
@@ -15,7 +16,7 @@ async function fetchDoctors(req, res) {
 
 async function fetchDoctorsCity(req, res) {
     let city = req.params.city
-    const doctors = await doctorsModels.find({ city: city }); //db.users.find({name: /a/})
+    const doctors = await doctorsModels.find({city: {$regex: city, $options: 'i'}}) // i for case insensitive
     console.log(doctors)
     try {
         res.send(doctors);
@@ -24,6 +25,7 @@ async function fetchDoctorsCity(req, res) {
     }
 }
 
+//delete functions
 async function deleteDoctorsId(req, res) {
     try {
         const id = req.params.id;
@@ -35,6 +37,7 @@ async function deleteDoctorsId(req, res) {
     }
 }
 
+///put functions
 async function updateDoctor(req, res) {
     try {
         const id = req.params.id;
@@ -52,6 +55,7 @@ async function updateDoctor(req, res) {
     }
 }
 
+//post functions
 async function addDoctor(req, res) {
     console.log(req.body)
     const doctors = new doctorsModels({
