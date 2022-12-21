@@ -1,50 +1,48 @@
-const doctorsModels = require('../models/doctorsModels.js');
+const clinicsModels = require('../models/clinicsModels.js');
 const bcrypt = require('bcryptjs');
 
-// all get functions
-async function fetchDoctors(req, res) {
-    const doctors = await doctorsModels.find();
-    for (let i = 0; i < doctors.length; i++) {
-        console.log(doctors)
+//all get functions
+async function fetchClinics(req, res) {
+    const clinics = await clinicsModels.find();
+    for (let i = 0; i < clinics.length; i++) {
+        console.log(clinics)
     }
     try {
-        res.send(doctors);
+        res.send(clinics);
     } catch (error) {
         res.status(500).send(error);
     }
 }
 
-async function fetchDoctorsCity(req, res) {
-    let city = req.params.city
-    const doctors = await doctorsModels.find({ city: { $regex: city, $options: 'i' } }) // i for case insensitive
-    console.log(doctors)
+async function fetchClinicsCity(req, res) {
+    let address = req.params.address
+    const clinics = await clinicsModels.find({ address: { $regex: address, $options: 'i' } }) // i for case insensitive
+    console.log(clinics)
     try {
-        res.send(doctors);
+        res.send(clinics);
     } catch (error) {
         res.status(500).send(error);
     }
 }
 
-//delete functions
-async function deleteDoctorsId(req, res) {
+async function deleteClinicsId(req, res) {
     try {
         const id = req.params.id;
-        const data = await doctorsModels.findByIdAndDelete(id)
-        res.send(`${data.first_name} has been deleted..`)
+        const data = await clinicsModels.findByIdAndDelete(id)
+        res.send(`${data.business_name} has been deleted..`)
     }
     catch (error) {
         res.status(400).json({ message: error.message })
     }
 }
 
-///put functions
-async function updateDoctor(req, res) {
+async function updateClinic(req, res) {
     try {
         const id = req.params.id;
         const updatedData = req.body;
         const options = { new: true };
 
-        const result = await doctorsModels.findByIdAndUpdate(
+        const result = await clinicsModels.findByIdAndUpdate(
             id, updatedData, options
         )
 
@@ -55,8 +53,9 @@ async function updateDoctor(req, res) {
     }
 }
 
+
 //post functions
-async function addDoctor(req, res) {
+async function addClinics(req, res) {
 
     //bcrypt password hashing
     //generate and use salt for extra security
@@ -64,12 +63,12 @@ async function addDoctor(req, res) {
     const hash = await bcrypt.hash(req.body.password, salt)
 
     // Check if this user already exisits
-    let doctors = await doctorsModels.findOne({ email: req.body.email });
-    if (doctors) {
+    let clinics = await clinicsModels.findOne({ email: req.body.email });
+    if (clinics) {
         return res.status(400).send('That user already exisits!');
     } else {
         // Insert the new user if they do not exist yet
-        doctors = new doctorsModels({
+        clinics = new clinicsModels({
             first_name: req?.body?.first_name,
             last_name: req?.body?.last_name,
             specialities: req?.body?.specialities,
@@ -80,29 +79,29 @@ async function addDoctor(req, res) {
             license: req?.body?.license,
             availability: req?.body?.availability,
             work_requirement: req?.body?.work_requirement,
-            imageKey: req.file.filename
+            imageKey: "default.jpg"
         });
-        await doctors.save();
-        res.send(doctors);
+        await clinics.save();
+        res.send(clinics);
     }
 }
 
 //Post request for login
-async function loginDoctor(req, res) {
+async function loginClinic(req, res) {
     //email and password
     const email = req.body.email
     const password = req.body.password
 
     //find user exist or not
-    doctorsModels.findOne({ email })
-        .then(doctors => {
+    clinicsModels.findOne({ email })
+        .then(clinics => {
             //if user not exist than return status 400
-            if (!doctors) return res.status(400).json({ msg: "User does not exist" })
+            if (!clinics) return res.status(400).json({ msg: "User does not exist" })
 
             //if user exist than compare password
             //password comes from the user
             //doctors.password comes from the database
-            bcrypt.compare(password, doctors.password, (err, data) => {
+            bcrypt.compare(password, clinics.password, (err, data) => {
                 //if error then throw an error
                 if (err) throw err
 
@@ -120,10 +119,10 @@ async function loginDoctor(req, res) {
 }
 
 module.exports = {
-    fetchDoctors,
-    fetchDoctorsCity,
-    deleteDoctorsId,
-    updateDoctor,
-    addDoctor,
-    loginDoctor
+    fetchClinics,
+    fetchClinicsCity,
+    deleteClinicsId,
+    updateClinic,
+    addClinics,
+    loginClinic
 }
