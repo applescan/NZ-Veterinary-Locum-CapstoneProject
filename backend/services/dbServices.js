@@ -80,7 +80,7 @@ async function addDoctor(req, res) {
             license: req?.body?.license,
             availability: req?.body?.availability,
             work_requirement: req?.body?.work_requirement,
-            imageKey: "default.jpg"
+            imageKey: req.file.filename
         });
         await doctors.save();
         res.send(doctors);

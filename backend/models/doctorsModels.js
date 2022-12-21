@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const doctorsSchema = new mongoose.Schema({
-    doctor_id: {
-        type: String,
-        required: false,
-    },
     first_name: {
         type: String,
         required: true,
@@ -47,7 +43,7 @@ const doctorsSchema = new mongoose.Schema({
     },
     imageKey: {
         type: String,
-        required: true,
+        required: false,
     }
 });
 const doctors = mongoose.model('doctorcollections', doctorsSchema); //make sure the name for collection to add "s" on mongodb compass and all lowercase

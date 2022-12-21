@@ -4,12 +4,9 @@ const app = express();
 const port = 4000;
 const swaggerUi = require('swagger-ui-express');
 swaggerDocument = require('./swagger.json');
+const doctorsRoute = require('./routes/doctorsRoute');
 const cors = require("cors");
 const session = require("express-session")
-const doctorsRoute = require('./routes/doctorsRoute');
-const clinicsRoute = require('./routes/clinicsRoute');
-const jobsRoute = require('./routes/jobsRoute');
-const bcrypt = require('bcryptjs')
 
 app.use(
   '/api-docs',
@@ -28,8 +25,6 @@ app.use(express.json()) //to read body req
 app.use(cors()) //to connect chrome browser or any browser 
 
 app.use('/doctors', doctorsRoute);
-app.use('/clinics', clinicsRoute);
-app.use('/jobs', jobsRoute);
 
 app.listen(port, () => {
   console.log(`NZ veterinary locum app listening at http://localhost:${port}`)
