@@ -21,6 +21,7 @@ const theme = createTheme();
 
 export default function SignUp() {
 
+    //doctor's authentication check, will be used in the doctor's profile pages through context.
     const { authenticated, setAuthenticated } = useContext(CustomContext)
 
     const [details, setDetails] = useState({
@@ -35,7 +36,7 @@ export default function SignUp() {
         event.preventDefault();
 
         setError(null)
-        // alert(`Congratulations ${details.first_name} your account has been succesfully created`)
+        
         const toSend = new FormData()
         toSend.append('first_name', details.first_name)
         toSend.append('last_name', details.last_name)
@@ -54,8 +55,7 @@ export default function SignUp() {
                 "Content-Type": "multipart/form-data"
             }
         }).then(() => {
-            navigate("/")
-            setAuthenticated(true)
+            navigate("/sign-in")
         })
             .catch((error) => setError(error))
     };
@@ -129,7 +129,7 @@ export default function SignUp() {
                                     type="password"
                                     id="password"
                                     autoComplete="new-password"
-                                    onChange={e => setDetails({ ...details, passworde: e.target.value })}
+                                    onChange={e => setDetails({ ...details, password: e.target.value })}
                                 />
                             </Grid>
                             <Grid item xs={12}>

@@ -23,27 +23,35 @@ const theme = createTheme();
 
 export default function SignIn() {
 
-    const { authenticated, setAuthenticated } = useContext(CustomContext)
+    //doctor's authentication check, will be used in the doctor's profile pages through context.
+    const { authenticated, setAuthenticated, setCurrentUserInfo } = useContext(CustomContext)
 
     const [error, setError] = useState(null)
     const navigate = useNavigate()
 
+    //On submit will post to the server to sign in
     const handleSubmit = (event) => {
+
         event.preventDefault();
-        
+
         setError(null)
 
         const data = new FormData(event.currentTarget);
+
         axios.post('http://localhost:4000/doctors/login', data, {
             headers: {
                 Accept: "application/json",
                 "Content-Type": "multipart/form-data"
             }
-        }).then(() => {
-            navigate("/")
-            setAuthenticated(true)
+
+        }).then(response => {
+            setAuthenticated(true);
+            setCurrentUserInfo(response.data.currentUserInfo)
+            navigate("/doctor-profile")
+            // console.log(response.data.authenticated)
+            console.log(response.data.currentUserInfo)
         })
-            .catch((error) => setError(error))
+            .catch((error) => setError(error.response.data.msg))
     };
 
     return (
@@ -66,7 +74,7 @@ export default function SignIn() {
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
 
-                    {error ? <h1>{error.toString()}</h1> : null}
+                        {error ? <h1>{error.toString()}</h1> : null}
 
                         <TextField
                             margin="normal"

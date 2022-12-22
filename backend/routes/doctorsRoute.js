@@ -30,6 +30,10 @@ router.get(`/all`, function (req, res) {
     doctorsController.fetchDoctors(req, res)
 })
 
+router.get(`/search/:id`, function (req, res) {
+    doctorsController.fetchDoctorsId(req, res)
+})
+
 router.get(`/search/:city`, function (req, res) {
     doctorsController.fetchDoctorsCity(req, res)
 })
