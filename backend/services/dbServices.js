@@ -73,7 +73,7 @@ async function updateDoctor(req, res) {
 }
 
 
-//post functions
+//post functions for making a new doctor account
 async function addDoctor(req, res) {
 
     //bcrypt password hashing
@@ -115,7 +115,7 @@ async function loginDoctor(req, res) {
     doctorsModels.findOne({ email })
         .then(doctors => {
             //if user not exist than return status 400
-            if (!doctors) return res.status(400).json({ msg: "User does not exist" })
+            if (!doctors) return res.status(400).json({ msg: "This email is not registered as a user in our system" })
 
             //if user exist than compare password
             //password comes from the user
@@ -127,7 +127,7 @@ async function loginDoctor(req, res) {
                 //if both match than you can do anything
                 if (data) {
                     console.log(doctors)
-                    return res.status(200).json({ msg: "Login success", currentUserInfo: doctors, authenticated: true }) //will send to the homepage with special profile page
+                    return res.status(200).json({ msg: "Login success", currentUserInfo: doctors, authenticated: true }) //currentUserInfo will be used as context in frontend
                 } else {
                     return res.status(401).json({ msg: "Invalid credential" })
                 }

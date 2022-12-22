@@ -14,6 +14,17 @@ async function fetchClinics(req, res) {
     }
 }
 
+async function fetchClinicsId(req, res) {
+    let id = req.params.id
+    const clinics = await clinicsModels.find({ _id: id }) // i for case insensitive
+    console.log(clinics)
+    try {
+        res.send(clinics);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+}
+
 async function fetchClinicsCity(req, res) {
     let address = req.params.address
     const clinics = await clinicsModels.find({ address: { $regex: address, $options: 'i' } }) // i for case insensitive
@@ -36,25 +47,32 @@ async function deleteClinicsId(req, res) {
     }
 }
 
+///put functions
 async function updateClinic(req, res) {
-    try {
-        const id = req.params.id;
-        const updatedData = req.body;
-        const options = { new: true };
+    // Check if this user already exisits
+    let clinics = await clinicsModels.findOne({ email: req.body.email });
+    if (clinics) {
+        return res.status(400).send(`You can't change that email because another user already use it`);
+    } else {
+        try {
+            const id = req.params.id;
+            const updatedData = req.body;
+            const options = { new: true };
 
-        const result = await clinicsModels.findByIdAndUpdate(
-            id, updatedData, options
-        )
+            const result = await clinicsModels.findByIdAndUpdate(
+                id, updatedData, options
+            )
 
-        res.send(result)
-    }
-    catch (error) {
-        res.status(400).json({ message: error.message })
+            res.send(result)
+        }
+        catch (error) {
+            res.status(400).json({ message: error.message })
+        }
     }
 }
 
 
-//post functions
+//post functions for making a new clinic account
 async function addClinics(req, res) {
 
     //bcrypt password hashing
@@ -69,17 +87,14 @@ async function addClinics(req, res) {
     } else {
         // Insert the new user if they do not exist yet
         clinics = new clinicsModels({
-            first_name: req?.body?.first_name,
-            last_name: req?.body?.last_name,
+            business_name: req?.body?.business_name,
             specialities: req?.body?.specialities,
             email: req?.body?.email,
             phone: req?.body?.phone,
             password: hash,
-            city: req?.body?.city,
-            license: req?.body?.license,
-            availability: req?.body?.availability,
-            work_requirement: req?.body?.work_requirement,
-            imageKey: "default.jpg"
+            address: req?.body?.address,
+            hours: req?.body?.hours,
+            imageKey: req?.file?.filename || "clinicDefault.jpg"
         });
         await clinics.save();
         res.send(clinics);
@@ -96,7 +111,7 @@ async function loginClinic(req, res) {
     clinicsModels.findOne({ email })
         .then(clinics => {
             //if user not exist than return status 400
-            if (!clinics) return res.status(400).json({ msg: "User does not exist" })
+            if (!clinics) return res.status(400).json({ msg: "This email is not registered as a user in our system" })
 
             //if user exist than compare password
             //password comes from the user
@@ -105,9 +120,9 @@ async function loginClinic(req, res) {
                 //if error then throw an error
                 if (err) throw err
 
-                //if both match than you can do anything
+                //if both match then you can do anything
                 if (data) {
-                    return res.status(200).json({ msg: "Login success", email: email, authenticated: true }) //will send to the homepage with special profile page
+                    return res.status(200).json({ msg: "Login success", currentUserInfoClinic: clinics, authenticated: true }) //currentUserInfo will be used as context in frontend
                 } else {
                     return res.status(401).json({ msg: "Invalid credential" })
                 }
@@ -120,6 +135,7 @@ async function loginClinic(req, res) {
 
 module.exports = {
     fetchClinics,
+    fetchClinicsId,
     fetchClinicsCity,
     deleteClinicsId,
     updateClinic,

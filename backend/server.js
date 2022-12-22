@@ -5,8 +5,8 @@ const port = 4000;
 const swaggerUi = require('swagger-ui-express');
 swaggerDocument = require('./swagger.json');
 const doctorsRoute = require('./routes/doctorsRoute');
+const clinicsRoute = require('./routes/clinicsRoute');
 const cors = require("cors");
-const session = require("express-session");
 const stream = require('stream');
 const path = require('path');
 const fs = require('fs');
@@ -17,17 +17,13 @@ app.use(
   swaggerUi.setup(swaggerDocument)
 );
 
-app.use(session({
-  secret: 'secret', //for learning purposes
-  resave: true,
-  saveUninitialized: false,
-}));
-
 app.use(express.json()) //to read body req 
 
 app.use(cors()) //to connect chrome browser or any browser 
 
 app.use('/doctors', doctorsRoute);
+
+app.use('/clinics', clinicsRoute);
 
 app.get("/images/:imageKey", (req, res) => {
   const imageKey = req?.params?.imageKey
@@ -67,5 +63,3 @@ db.on("error", console.error.bind(console, "connection error: "));
 db.once("open", function () {
   console.log("MongoDB is connected successfully");
 });
-
-//index.js only take routers

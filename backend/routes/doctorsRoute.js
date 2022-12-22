@@ -47,7 +47,6 @@ router.put(`/update/:id`, function (req, res) {
 })
 
 router.post(`/add`, upload.single('imageKey'), function (req, res) {
-    // console.log(req.body)
     doctorsController.addDoctor(req, res)
 })
 
