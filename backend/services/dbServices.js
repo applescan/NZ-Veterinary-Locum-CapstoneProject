@@ -14,6 +14,17 @@ async function fetchDoctors(req, res) {
     }
 }
 
+async function fetchDoctorsId(req, res) {
+    let id = req.params.id
+    const doctors = await doctorsModels.find({ _id: id }) // i for case insensitive
+    console.log(doctors)
+    try {
+        res.send(doctors);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+}
+
 async function fetchDoctorsCity(req, res) {
     let city = req.params.city
     const doctors = await doctorsModels.find({ city: { $regex: city, $options: 'i' } }) // i for case insensitive
@@ -39,23 +50,30 @@ async function deleteDoctorsId(req, res) {
 
 ///put functions
 async function updateDoctor(req, res) {
-    try {
-        const id = req.params.id;
-        const updatedData = req.body;
-        const options = { new: true };
+    // Check if this user already exisits
+    let doctors = await doctorsModels.findOne({ email: req.body.email });
+    if (doctors) {
+        return res.status(400).send(`You can't change that email because another user already use it`);
+    } else {
+        try {
+            const id = req.params.id;
+            const updatedData = req.body;
+            const options = { new: true };
 
-        const result = await doctorsModels.findByIdAndUpdate(
-            id, updatedData, options
-        )
+            const result = await doctorsModels.findByIdAndUpdate(
+                id, updatedData, options
+            )
 
-        res.send(result)
-    }
-    catch (error) {
-        res.status(400).json({ message: error.message })
+            res.send(result)
+        }
+        catch (error) {
+            res.status(400).json({ message: error.message })
+        }
     }
 }
 
-//post functions
+
+//post functions for making a new doctor account
 async function addDoctor(req, res) {
 
     //bcrypt password hashing
@@ -80,7 +98,7 @@ async function addDoctor(req, res) {
             license: req?.body?.license,
             availability: req?.body?.availability,
             work_requirement: req?.body?.work_requirement,
-            imageKey: req.file.filename
+            imageKey: req?.file?.filename || "default.jpg"
         });
         await doctors.save();
         res.send(doctors);
@@ -97,7 +115,7 @@ async function loginDoctor(req, res) {
     doctorsModels.findOne({ email })
         .then(doctors => {
             //if user not exist than return status 400
-            if (!doctors) return res.status(400).json({ msg: "User does not exist" })
+            if (!doctors) return res.status(400).json({ msg: "This email is not registered as a user in our system" })
 
             //if user exist than compare password
             //password comes from the user
@@ -108,7 +126,8 @@ async function loginDoctor(req, res) {
 
                 //if both match than you can do anything
                 if (data) {
-                    return res.status(200).json({ msg: "Login success", email: email, authenticated: true }) //will send to the homepage with special profile page
+                    console.log(doctors)
+                    return res.status(200).json({ msg: "Login success", currentUserInfo: doctors, authenticated: true }) //currentUserInfo will be used as context in frontend
                 } else {
                     return res.status(401).json({ msg: "Invalid credential" })
                 }
@@ -121,6 +140,7 @@ async function loginDoctor(req, res) {
 
 module.exports = {
     fetchDoctors,
+    fetchDoctorsId,
     fetchDoctorsCity,
     deleteDoctorsId,
     updateDoctor,
