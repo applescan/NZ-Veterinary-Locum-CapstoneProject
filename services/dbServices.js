@@ -50,6 +50,11 @@ async function deleteDoctorsId(req, res) {
 
 ///put functions
 async function updateDoctor(req, res) {
+
+    const salt = await bcrypt.genSalt()
+    const hash = await bcrypt.hash(req.body.password, salt)
+
+
     // Check if this user already exisits
     let doctors = await doctorsModels.findOne({ email: req.body.email });
     if (doctors) {
@@ -57,7 +62,24 @@ async function updateDoctor(req, res) {
     } else {
         try {
             const id = req.params.id;
-            const updatedData = req.body;
+            const first_name = req?.body?.first_name
+            const last_name = req?.body?.last_name
+            const specialities = req?.body?.specialities
+            const email = req?.body?.email
+            const phone = req?.body?.phone
+            const password = hash
+            const city = req?.body?.city
+            const license = req?.body?.license
+            const availability = req?.body?.availability
+            const work_requirement = req?.body?.work_requirement
+            const imageKey = req?.file?.filename || "default.jpg"
+
+            const updatedData = {
+                first_name: first_name, last_name: last_name, specialities: specialities, email: email,
+                phone: phone, password: password, city: city, license: license, availability: availability,
+                work_requirement: work_requirement, imageKey: imageKey
+
+            };
             const options = { new: true };
 
             const result = await doctorsModels.findByIdAndUpdate(
