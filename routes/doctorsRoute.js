@@ -42,7 +42,7 @@ router.delete(`/delete/:id`, function (req, res) {
     doctorsController.deleteDoctorsId(req, res)
 })
 
-router.put(`/update/:id`, function (req, res) {
+router.post(`/update/:id`, upload.single('imageKey'), function (req, res) {
     doctorsController.updateDoctor(req, res)
 })
 

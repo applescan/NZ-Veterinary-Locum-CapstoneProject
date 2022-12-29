@@ -19,7 +19,8 @@ async function fetchDoctorsId(req, res) {
     const doctors = await doctorsModels.find({ _id: id }) // i for case insensitive
     console.log(doctors)
     try {
-        res.send(doctors);
+        return res.status(200).json({ msg: "Fetch by ID success", currentUserInfo: doctors })
+        //res.send(doctors );
     } catch (error) {
         res.status(500).send(error);
     }
@@ -54,45 +55,40 @@ async function updateDoctor(req, res) {
     const salt = await bcrypt.genSalt()
     const hash = await bcrypt.hash(req.body.password, salt)
 
+    try {
+        const id = req.params.id;
+        const first_name = req?.body?.first_name
+        const last_name = req?.body?.last_name
+        const specialities = req?.body?.specialities
+        const email = req?.body?.email
+        const phone = req?.body?.phone
+        const password = hash
+        const city = req?.body?.city
+        const license = req?.body?.license
+        const availability = req?.body?.availability
+        const work_requirement = req?.body?.work_requirement
+        const imageKey = req?.file?.filename || "default.jpg"
 
-    // Check if this user already exisits
-    let doctors = await doctorsModels.findOne({ email: req.body.email });
-    if (doctors) {
-        return res.status(400).send(`You can't change that email because another user already use it`);
-    } else {
-        try {
-            const id = req.params.id;
-            const first_name = req?.body?.first_name
-            const last_name = req?.body?.last_name
-            const specialities = req?.body?.specialities
-            const email = req?.body?.email
-            const phone = req?.body?.phone
-            const password = hash
-            const city = req?.body?.city
-            const license = req?.body?.license
-            const availability = req?.body?.availability
-            const work_requirement = req?.body?.work_requirement
-            const imageKey = req?.file?.filename || "default.jpg"
+        const updatedData = {
+            first_name: first_name, last_name: last_name, specialities: specialities, email: email,
+            phone: phone, password: password, city: city, license: license, availability: availability,
+            work_requirement: work_requirement, imageKey: imageKey
 
-            const updatedData = {
-                first_name: first_name, last_name: last_name, specialities: specialities, email: email,
-                phone: phone, password: password, city: city, license: license, availability: availability,
-                work_requirement: work_requirement, imageKey: imageKey
+        };
+        const options = { new: true };
 
-            };
-            const options = { new: true };
+        const result = await doctorsModels.findByIdAndUpdate(
+            id, updatedData, options
+        )
 
-            const result = await doctorsModels.findByIdAndUpdate(
-                id, updatedData, options
-            )
-
-            res.send(result)
-        }
-        catch (error) {
-            res.status(400).json({ message: error.message })
-        }
+        res.send(result)
+    }
+    catch (error) {
+        console.log(error)
+        res.status(400).json({ message: error.message })
     }
 }
+
 
 
 //post functions for making a new doctor account
@@ -106,9 +102,9 @@ async function addDoctor(req, res) {
     // Check if this user already exisits
     let doctors = await doctorsModels.findOne({ email: req.body.email });
     if (doctors) {
-        return res.status(400).send('That user already exisits!');
+        return res.status(400).send('That email is used by another account!');
     } else {
-        // Insert the new user if they do not exist yet
+        // Insert the new user data
         doctors = new doctorsModels({
             first_name: req?.body?.first_name,
             last_name: req?.body?.last_name,
