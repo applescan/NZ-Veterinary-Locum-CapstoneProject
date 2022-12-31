@@ -19,7 +19,8 @@ async function fetchClinicsId(req, res) {
     const clinics = await clinicsModels.find({ _id: id }) // i for case insensitive
     console.log(clinics)
     try {
-        res.send(clinics);
+        return res.status(200).json({ msg: "Fetch by ID success", currentUserInfoClinic: clinics })
+        //res.send(clinics);
     } catch (error) {
         res.status(500).send(error);
     }
@@ -114,36 +115,36 @@ async function addClinics(req, res) {
 
 //Post request for login
 async function loginClinic(req, res) {
-     //email and password
-     const email = req.body.email
-     const password = req.body.password
- 
-     //find user exist or not
-     clinicsModels.findOne({ email })
-         .then(clinics => {
-             //if user not exist than return status 400
-             if (!clinics) return res.status(400).json({ msg: "This email is not registered as a user in our system" })
- 
-             //if user exist than compare password
-             //password comes from the user
-             //doctors.password comes from the database
-             bcrypt.compare(password, clinics.password, (err, data) => {
-                 //if error then throw an error
-                 if (err) throw err
- 
-                 //if both match than you can do anything
-                 if (data) {
-                     console.log(clinics)
-                     return res.status(200).json({ msg: "Login success", currentUserInfoClinic: clinics, authenticated: true }) //currentUserInfo will be used as context in frontend
-                 } else {
-                     return res.status(401).json({ msg: "Invalid credential" })
-                 }
- 
-             })
- 
-         })
- 
- }
+    //email and password
+    const email = req.body.email
+    const password = req.body.password
+
+    //find user exist or not
+    clinicsModels.findOne({ email })
+        .then(clinics => {
+            //if user not exist than return status 400
+            if (!clinics) return res.status(400).json({ msg: "This email is not registered as a user in our system" })
+
+            //if user exist than compare password
+            //password comes from the user
+            //doctors.password comes from the database
+            bcrypt.compare(password, clinics.password, (err, data) => {
+                //if error then throw an error
+                if (err) throw err
+
+                //if both match than you can do anything
+                if (data) {
+                    console.log(clinics)
+                    return res.status(200).json({ msg: "Login success", currentUserInfoClinic: clinics, authenticated: true }) //currentUserInfo will be used as context in frontend
+                } else {
+                    return res.status(401).json({ msg: "Invalid credential" })
+                }
+
+            })
+
+        })
+
+}
 
 module.exports = {
     fetchClinics,

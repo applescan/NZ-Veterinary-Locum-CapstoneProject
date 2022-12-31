@@ -50,7 +50,7 @@ router.post(`/add`, upload.single('imageKey'), function (req, res) {
     clinicsController.addClinics(req, res)
 })
 
-router.post(`/login`, function (req, res) {
+router.post(`/login`,upload.none(), function (req, res) {
     clinicsController.loginClinic(req, res)
 })
 
