@@ -10,6 +10,14 @@ router.get(`/search/:location`, function (req, res) {
     jobsController.fetchJobsCity(req, res)
 })
 
+router.get(`/search/id/:jobId`, function (req, res) { 
+    jobsController.fetchJobsId(req, res)
+})
+
+router.get(`/search/clinic/:clinicId`, function (req, res) { 
+    jobsController.fetchJobsFromClinicId(req, res)
+})
+
 router.delete(`/delete/:id`, function (req, res) { 
     jobsController.deleteJobsId(req, res)
 })

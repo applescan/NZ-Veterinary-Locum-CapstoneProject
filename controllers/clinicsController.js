@@ -6,6 +6,9 @@ const fetchClinics = async (req, res) => {
 const fetchClinicsCity = async (req, res) => {  
     let clinics = await getClinicssData.fetchClinicsCity(req, res)
 }
+const fetchClinicsId = async (req, res) => {  
+    let clinics = await getClinicssData.fetchClinicsId(req, res)
+}
 const deleteClinicsId = async (req, res) => {  
     let clinics = await getClinicssData.deleteClinicsId(req, res)
 }
@@ -21,6 +24,7 @@ const loginClinic = async (req, res) => {
 
 module.exports = {
     fetchClinics,
+    fetchClinicsId,
     fetchClinicsCity,
     deleteClinicsId,
     updateClinic,

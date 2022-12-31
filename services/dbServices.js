@@ -102,7 +102,7 @@ async function addDoctor(req, res) {
     // Check if this user already exisits
     let doctors = await doctorsModels.findOne({ email: req.body.email });
     if (doctors) {
-        return res.status(400).send('That email is used by another account!');
+        return res.status(400).json({ msg: "This email is already in use. Please use another one." });
     } else {
         // Insert the new user data
         doctors = new doctorsModels({

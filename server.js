@@ -6,6 +6,7 @@ const swaggerUi = require('swagger-ui-express');
 swaggerDocument = require('./swagger.json');
 const doctorsRoute = require('./routes/doctorsRoute');
 const clinicsRoute = require('./routes/clinicsRoute');
+const jobsRoute = require('./routes/jobsRoute');
 const cors = require("cors");
 const stream = require('stream');
 const path = require('path');
@@ -24,6 +25,8 @@ app.use(cors()) //to connect chrome browser or any browser
 app.use('/doctors', doctorsRoute);
 
 app.use('/clinics', clinicsRoute);
+
+app.use('/jobs', jobsRoute);
 
 app.get("/images/:imageKey", (req, res) => {
   const imageKey = req?.params?.imageKey

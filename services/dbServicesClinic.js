@@ -53,43 +53,33 @@ async function updateClinic(req, res) {
     const salt = await bcrypt.genSalt()
     const hash = await bcrypt.hash(req.body.password, salt)
 
+    try {
+        const id = req.params.id;
+        const business_name = req?.body?.business_name
+        const specialities = req?.body?.specialities
+        const email = req?.body?.email
+        const phone = req?.body?.phone
+        const password = hash
+        const address = req?.body?.address
+        const hours = req?.body?.hours
+        const imageKey = req?.file?.filename || "clinicDefault.jpg"
 
-    // Check if this user already exisits
-    let clinics = await clinicsModels.findOne({ email: req.body.email });
-    if (clinics) {
-        return res.status(400).send(`You can't change that email because another user already use it`);
-    } else {
-        try {
-            const id = req.params.id;
-            const first_name = req?.body?.first_name
-            const last_name = req?.body?.last_name
-            const specialities = req?.body?.specialities
-            const email = req?.body?.email
-            const phone = req?.body?.phone
-            const password = hash
-            const city = req?.body?.city
-            const license = req?.body?.license
-            const availability = req?.body?.availability
-            const work_requirement = req?.body?.work_requirement
-            const imageKey = req?.file?.filename || "default.jpg"
+        const updatedData = {
+            business_name: business_name, specialities: specialities, email: email,
+            phone: phone, password: password, address: address, hours: hours, imageKey: imageKey
 
-            const updatedData = {
-                first_name: first_name, last_name: last_name, specialities: specialities, email: email,
-                phone: phone, password: password, city: city, license: license, availability: availability,
-                work_requirement: work_requirement, imageKey: imageKey
+        };
+        const options = { new: true };
 
-            };
-            const options = { new: true };
+        const result = await clinicsModels.findByIdAndUpdate(
+            id, updatedData, options
+        )
 
-            const result = await clinicsModels.findByIdAndUpdate(
-                id, updatedData, options
-            )
-
-            res.send(result)
-        }
-        catch (error) {
-            res.status(400).json({ message: error.message })
-        }
+        res.send(result)
+    }
+    catch (error) {
+        console.log(error)
+        res.status(400).json({ message: error.message })
     }
 }
 
@@ -104,7 +94,7 @@ async function addClinics(req, res) {
     // Check if this user already exisits
     let clinics = await clinicsModels.findOne({ email: req.body.email });
     if (clinics) {
-        return res.status(400).send('That user already exisits!');
+        return res.status(400).json({ msg: "This email is already in use. Please use another one." });
     } else {
         // Insert the new user if they do not exist yet
         clinics = new clinicsModels({
@@ -124,35 +114,36 @@ async function addClinics(req, res) {
 
 //Post request for login
 async function loginClinic(req, res) {
-    //email and password
-    const email = req.body.email
-    const password = req.body.password
-
-    //find user exist or not
-    clinicsModels.findOne({ email })
-        .then(clinics => {
-            //if user not exist than return status 400
-            if (!clinics) return res.status(400).json({ msg: "This email is not registered as a user in our system" })
-
-            //if user exist than compare password
-            //password comes from the user
-            //doctors.password comes from the database
-            bcrypt.compare(password, clinics.password, (err, data) => {
-                //if error then throw an error
-                if (err) throw err
-
-                //if both match then you can do anything
-                if (data) {
-                    return res.status(200).json({ msg: "Login success", currentUserInfoClinic: clinics, authenticated: true }) //currentUserInfo will be used as context in frontend
-                } else {
-                    return res.status(401).json({ msg: "Invalid credential" })
-                }
-
-            })
-
-        })
-
-}
+     //email and password
+     const email = req.body.email
+     const password = req.body.password
+ 
+     //find user exist or not
+     clinicsModels.findOne({ email })
+         .then(clinics => {
+             //if user not exist than return status 400
+             if (!clinics) return res.status(400).json({ msg: "This email is not registered as a user in our system" })
+ 
+             //if user exist than compare password
+             //password comes from the user
+             //doctors.password comes from the database
+             bcrypt.compare(password, clinics.password, (err, data) => {
+                 //if error then throw an error
+                 if (err) throw err
+ 
+                 //if both match than you can do anything
+                 if (data) {
+                     console.log(clinics)
+                     return res.status(200).json({ msg: "Login success", currentUserInfoClinic: clinics, authenticated: true }) //currentUserInfo will be used as context in frontend
+                 } else {
+                     return res.status(401).json({ msg: "Invalid credential" })
+                 }
+ 
+             })
+ 
+         })
+ 
+ }
 
 module.exports = {
     fetchClinics,

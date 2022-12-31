@@ -24,6 +24,30 @@ async function fetchJobsCity(req, res) {
     }
 }
 
+async function fetchJobsId(req, res) {
+    let jobId = req.params.jobId
+    const jobs = await jobsModels.find({ _id: jobId }) // i for case insensitive
+    console.log(jobs)
+    try {
+        return res.status(200).json({ msg: "Fetch by ID success", currentUserInfo: jobs })
+        //res.send(doctors );
+    } catch (error) {
+        res.status(500).send(error);
+    }
+}
+
+async function fetchJobsFromClinicId(req, res) {
+    let clinicId = req.params.clinicId
+    const jobs = await jobsModels.find({ clinic_id: clinicId }) // i for case insensitive
+    console.log(jobs)
+    try {
+        return res.status(200).json({ msg: "Fetch by ID success", currentUserInfo: jobs })
+        //res.send(doctors );
+    } catch (error) {
+        res.status(500).send(error);
+    }
+}
+
 async function deleteJobsId(req, res) {
     try {
         const id = req.params.id;
@@ -55,6 +79,8 @@ async function updateJob(req, res) {
 async function addJobs(req, res) {
     const jobs = new jobsModels({
         job_title: req?.body?.job_title,
+        email: req?.body?.email,
+        phone: req?.body?.phone,
         specialities: req?.body?.specialities,
         location: req?.body?.location,
         descriptions: req?.body?.descriptions,
@@ -74,6 +100,8 @@ async function addJobs(req, res) {
 module.exports = {
     fetchJobs,
     fetchJobsCity,
+    fetchJobsId,
+    fetchJobsFromClinicId,
     deleteJobsId,
     updateJob,
     addJobs

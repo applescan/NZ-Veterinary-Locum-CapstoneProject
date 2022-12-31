@@ -26,7 +26,7 @@ var upload = multer({
     }
 });
 
-router.get(`/all`, function (req, res) { 
+router.get(`/all`, function (req, res) {
     clinicsController.fetchClinics(req, res)
 })
 
@@ -34,15 +34,15 @@ router.get(`/search/:id`, function (req, res) {
     clinicsController.fetchClinicsId(req, res)
 })
 
-router.get(`/search/:address`, function (req, res) { 
+router.get(`/search/city/:address`, function (req, res) {
     clinicsController.fetchClinicsCity(req, res)
 })
 
-router.delete(`/delete/:id`, function (req, res) { 
+router.delete(`/delete/:id`, function (req, res) {
     clinicsController.deleteClinicsId(req, res)
 })
 
-router.put(`/update/:id`, function (req, res) { 
+router.post(`/update/:id`, upload.single('imageKey'), function (req, res) {
     clinicsController.updateClinic(req, res)
 })
 
@@ -50,7 +50,7 @@ router.post(`/add`, upload.single('imageKey'), function (req, res) {
     clinicsController.addClinics(req, res)
 })
 
-router.post(`/login`, function (req, res) { 
+router.post(`/login`, function (req, res) {
     clinicsController.loginClinic(req, res)
 })
 
