@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 
-const clinicsSchema = new mongoose.Schema({
-    business_name: {
+const doctorsSchema = new mongoose.Schema({
+    first_name: {
         type: String,
         required: true,
+    },
+    last_name: {
+        type: String,
+        required: false,
     },
     specialities: {
         type: String,
@@ -21,22 +25,26 @@ const clinicsSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    address: {
-        type: String,
-        required: false,
-    },
     city: {
         type: String,
         required: false,
     },
-    hours: {
+    license: {
+        type: String,
+        required: false,
+    },
+    availability: {
+        type: String,
+        required: false,
+    },
+    work_requirement: {
         type: String,
         required: false,
     },
     imageKey: {
         type: String,
-        required: true,
+        required: false,
     }
 });
-const clinics = mongoose.model('cliniccollections', clinicsSchema); //make sure the name for collection to add "s" on mongodb compass and all lowercase
-module.exports = clinics;
+const doctors = mongoose.model('doctorcollections', doctorsSchema); //make sure the name for collection to add "s" on mongodb compass and all lowercase
+module.exports = doctors;

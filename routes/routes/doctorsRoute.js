@@ -1,5 +1,5 @@
 var express = require('express');
-var clinicsController = require('../controllers/clinicsController')
+var doctorsController = require('../controllers/doctorsController')
 var router = express.Router();
 let multer = require('multer'),
     uuidv4 = require('uuid/v4')
@@ -27,31 +27,31 @@ var upload = multer({
 });
 
 router.get(`/all`, function (req, res) {
-    clinicsController.fetchClinics(req, res)
+    doctorsController.fetchDoctors(req, res)
 })
 
 router.get(`/search/:id`, function (req, res) {
-    clinicsController.fetchClinicsId(req, res)
+    doctorsController.fetchDoctorsId(req, res)
 })
 
 router.get(`/search/city/:city`, function (req, res) {
-    clinicsController.fetchClinicsCity(req, res)
+    doctorsController.fetchDoctorsCity(req, res)
 })
 
 router.delete(`/delete/:id`, function (req, res) {
-    clinicsController.deleteClinicsId(req, res)
+    doctorsController.deleteDoctorsId(req, res)
 })
 
 router.post(`/update/:id`, upload.single('imageKey'), function (req, res) {
-    clinicsController.updateClinic(req, res)
+    doctorsController.updateDoctor(req, res)
 })
 
 router.post(`/add`, upload.single('imageKey'), function (req, res) {
-    clinicsController.addClinics(req, res)
+    doctorsController.addDoctor(req, res)
 })
 
-router.post(`/login`,upload.none(), function (req, res) {
-    clinicsController.loginClinic(req, res)
+router.post(`/login`, upload.none(), function (req, res) {
+    doctorsController.loginDoctor(req, res)
 })
 
 module.exports = router;
