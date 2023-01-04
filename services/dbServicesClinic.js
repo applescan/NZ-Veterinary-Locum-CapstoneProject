@@ -76,7 +76,7 @@ async function updateClinic(req, res) {
         }
 
         //if the req password exist then it will update password (adding password to updated data)
-        if (req.body.password.length !== 0) {
+        if (req.body.password?.length) {
             const salt = await bcrypt.genSalt()
             const hash = await bcrypt.hash(req.body.password, salt)
             updatedData.password = hash
