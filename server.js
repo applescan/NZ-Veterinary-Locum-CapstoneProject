@@ -1,9 +1,8 @@
 const express = require('express');
 const mongoose = require("mongoose");
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 const swaggerUi = require('swagger-ui-express');
-swaggerDocument = require('./swagger.json');
 const doctorsRoute = require('./routes/doctorsRoute');
 const clinicsRoute = require('./routes/clinicsRoute');
 const jobsRoute = require('./routes/jobsRoute');
@@ -11,6 +10,9 @@ const cors = require("cors");
 const stream = require('stream');
 const path = require('path');
 const fs = require('fs');
+const dotenv = require('dotenv')
+swaggerDocument = require('./swagger.json');
+dotenv.config()
 
 app.use(
   '/api-docs',
@@ -52,12 +54,13 @@ app.get("/images/:imageKey", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`NZ veterinary locum app listening at http://localhost:${port}`)
+  console.log(`NZ veterinary locum app listening at ${port}`)
 });
 
-mongoose.connect('mongodb://127.0.0.1/nzLocum',
+mongoose.connect(`${process.env.ATLAS_URI}`,
   {
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
   }
 );
 
