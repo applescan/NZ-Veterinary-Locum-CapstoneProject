@@ -30,6 +30,11 @@ app.use('/clinics', clinicsRoute);
 
 app.use('/jobs', jobsRoute);
 
+app.get("/", function (req, res) {
+  //when we get an http get request to the root/homepage
+  res.send("This is the backend of NZ locum network");
+});
+
 app.get("/images/:imageKey", (req, res) => {
   const imageKey = req?.params?.imageKey
   try {

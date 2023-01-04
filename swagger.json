@@ -2,23 +2,23 @@
     "swagger": "2.0",
     "info": {
         "version": "1.0.0",
-        "title": "Animal Crossing Villagers",
-        "description": "This API contains curated animal crossing character datas",
+        "title": "NZ Veterinary Locum network - Backend",
+        "description": "This API serves as a backend for NZ Veterinary Locum Network website",
         "license": {
             "name": "MIT",
             "url": "https://opensource.org/licenses/MIT"
         }
     },
-    "host": "localhost:3000",
+    "host": "nz-locum-backend.herokuapp.com",
     "basePath": "/",
     "tags": [
         {
-            "name": "Animal Crossing VIllagers",
-            "description": "See characters"
+            "name": "NZ Veterinary Locum Network",
+            "description": "Get all informations of vet locums, clinics, and job listings"
         }
     ],
     "schemes": [
-        "http"
+        "https"
     ],
     "consumes": [
         "application/json"
@@ -27,149 +27,638 @@
         "application/json"
     ],
     "paths": {
-        "/gender/male": {
+        "/doctors/all": {
             "get": {
                 "tags": [
-                    "Get all male charcters"
+                    "Get all veterinary locums biodata"
                 ],
-                "summary": "Get all male charcters",
+                "summary": "Get all locums and the informations related to the locums",
                 "responses": {
                     "200": {
-                        "description": "This service allows you to see animal crossing characters"
+                        "description": "This service allows you to see all available locums in NZ Veterinary Locum Network"
                     }
                 }
             }
         },
-        "/gender/female": {
+        "/doctors/search/{id}": {
             "get": {
                 "tags": [
-                    "Get all female characters"
+                    "Search specific locum's information based on their id"
                 ],
-                "summary": "Get all female characters",
+                "summary": "Search specific locum's information based on their id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Put the id of the locum you want to search"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "This service allows you to see animal crossing characters"
+                        "description": "This service allows you to see the information of a locum based by their id in NZ Veterinary Locum Network"
                     }
                 }
             }
         },
-        "/character/random": {
+        "/doctors/search/city/{city}": {
             "get": {
                 "tags": [
-                    "Get all characters randomly"
+                    "Search specific locum's information based on their city"
                 ],
-                "summary": "Get all characters randomly",
+                "summary": "Search specific locum's information based on their city",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "path",
+                        "description": "Put the city of the locum you want to search ex: auckland, northland, dunedin, wellington etc."
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "This service allows you to see animal crossing characters"
+                        "description": "This service allows you to see the information of a locum based by their city in NZ Veterinary Locum Network"
                     }
                 }
             }
         },
-        "/personality/normal": {
-            "get": {
+        "/doctors/login": {
+            "post": {
                 "tags": [
-                    "Get all normal characters"
+                    "Allows registered locum to login to NZ Veterinary Locum Network"
                 ],
-                "summary": "Get all normal characters",
+                "summary": "Allows registered locum to login to NZ Veterinary Locum Network",
+                "parameters": [
+                    {
+                        "name": "datas",
+                        "in": "body",
+                        "description": "Put the credentials used to login to your account",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "This service allows you to see animal crossing characters"
+                        "description": "This service allows you to login as a locum to NZ Veterinary Locum Network"
                     }
                 }
             }
         },
-        "/personality/peppy": {
-            "get": {
+        "/doctors/add": {
+            "post": {
                 "tags": [
-                    "Get all peppy characters"
+                    "Add new locum to the database"
                 ],
-                "summary": "Get all peppy characters",
+                "summary": "Add new locum to the database",
+                "parameters": [
+                    {
+                        "name": "datas",
+                        "in": "body",
+                        "description": "Put the data you want to add. Ex: first_name, last_name, email, password. Ex: Felicia, felicia@email.com, auckland, etc",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "first_name": {
+                                    "type": "string"
+                                },
+                                "last_name": {
+                                    "type": "string"
+                                },
+                                "specialities": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "phone": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "city": {
+                                    "type": "string"
+                                },
+                                "license": {
+                                    "type": "string"
+                                },
+                                "availability": {
+                                    "type": "string"
+                                },
+                                "work_requirement": {
+                                    "type": "string"
+                                },
+                                "imageKey": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "This service allows you to see animal crossing characters"
+                        "description": "This service allows you to add new user to NZ Veterinary Locum Network"
                     }
                 }
             }
         },
-        "/personality/snooty": {
-            "get": {
+        "/doctors/update/{id}": {
+            "post": {
                 "tags": [
-                    "Get all snooty characters"
+                    "Update information on a specific locum's information based on their id"
                 ],
-                "summary": "Get all snooty characters",
+                "summary": "Update information on a specific locum's information based on their id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Put the id of the locum you want to update"
+                    },
+                    {
+                        "name": "datas",
+                        "in": "body",
+                        "description": "Put the column you want to update. Ex: first_name, last_name, email, password, and then the value of that column. Ex: Felicia, felicia@email.com, auckland, etc",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "first_name": {
+                                    "type": "string"
+                                },
+                                "last_name": {
+                                    "type": "string"
+                                },
+                                "specialities": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "phone": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "city": {
+                                    "type": "string"
+                                },
+                                "license": {
+                                    "type": "string"
+                                },
+                                "availability": {
+                                    "type": "string"
+                                },
+                                "work_requirement": {
+                                    "type": "string"
+                                },
+                                "imageKey": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "This service allows you to see animal crossing characters"
+                        "description": "This service allows you to update the information of a locum based by their id in NZ Veterinary Locum Network"
                     }
                 }
             }
         },
-        "/personality/uchi": {
-            "get": {
+        "/doctors/delete/{id}": {
+            "delete": {
                 "tags": [
-                    "Get all uchi characters"
+                    "Delete a specific locum's information based on their id"
                 ],
-                "summary": "Get all uchi characters",
+                "summary": "Delete a specific locum's information based on their id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Put the id of the locum you want to delete"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "This service allows you to see animal crossing characters"
+                        "description": "This service allows you to delete the information of a locum based by their id in NZ Veterinary Locum Network"
                     }
                 }
             }
         },
-        "/personality/lazy": {
+
+
+        "/clinics/all": {
             "get": {
                 "tags": [
-                    "Get all lazy characters"
+                    "Get all registered clinic informations"
                 ],
-                "summary": "Get all lazy characters",
+                "summary": "Get all registered clinic information",
                 "responses": {
                     "200": {
-                        "description": "This service allows you to see animal crossing characters"
+                        "description": "This service allows you to see all available clinics in NZ Veterinary Locum Network"
                     }
                 }
             }
         },
-        "/personality/jock": {
+        "/clinics/search/{id}": {
             "get": {
                 "tags": [
-                    "Get all jock characters"
+                    "Search specific clinic's information based on their id"
                 ],
-                "summary": "Get all jock characters",
+                "summary": "Search specific clinic's information based on their id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Put the id of the clinic you want to search"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "This service allows you to see animal crossing characters"
+                        "description": "This service allows you to see the information of a clinic based by their id in NZ Veterinary Locum Network"
                     }
                 }
             }
         },
-        "/personality/cranky": {
+        "/clinics/search/city/{city}": {
             "get": {
                 "tags": [
-                    "Get all cranky characters"
+                    "Search specific clinic's information based on their city"
                 ],
-                "summary": "Get all cranky characters",
+                "summary": "Search specific clinic's information based on their city",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "path",
+                        "description": "Put the city of the clinic you want to search ex: auckland, northland, dunedin, wellington etc."
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "This service allows you to see animal crossing characters"
+                        "description": "This service allows you to see the information of a clinic based by their city in NZ Veterinary Locum Network"
                     }
                 }
             }
         },
-        "/personality/smug": {
-            "get": {
+        "/clinics/login": {
+            "post": {
                 "tags": [
-                    "Get all smug characters"
+                    "Allows registered clinic to login to NZ Veterinary Locum Network"
                 ],
-                "summary": "Get all smug characters",
+                "summary": "Allows registered clinic to login to NZ Veterinary Locum Network",
+                "parameters": [
+                    {
+                        "name": "datas",
+                        "in": "body",
+                        "description": "Put the credentials used to login to your account",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "This service allows you to see animal crossing characters"
+                        "description": "This service allows you to login as a clinic to NZ Veterinary Locum Network"
+                    }
+                }
+            }
+        },
+        "/clinics/add": {
+            "post": {
+                "tags": [
+                    "Add new clinic to the database"
+                ],
+                "summary": "Add new clinic to the database",
+                "parameters": [
+                    {
+                        "name": "datas",
+                        "in": "body",
+                        "description": "Put the data you want to add. Ex: first_name, last_name, email, password. Ex: Felicia, felicia@email.com, auckland, etc",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "business_name": {
+                                    "type": "string"
+                                },
+                                "specialities": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "phone": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "address": {
+                                    "type": "string"
+                                },
+                                "city": {
+                                    "type": "string"
+                                },
+                                "hours": {
+                                    "type": "string"
+                                },
+                                "imageKey": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "This service allows you to add new user clinic to NZ Veterinary Locum Network"
+                    }
+                }
+            }
+        },
+        "/clinics/update/{id}": {
+            "post": {
+                "tags": [
+                    "Update information on a specific clinic's information based on their id"
+                ],
+                "summary": "Update information on a specific clinic's information based on their id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Put the id of the clinic you want to update"
+                    },
+                    {
+                        "name": "datas",
+                        "in": "body",
+                        "description": "Put the column you want to update. Ex: business_name, email, password, and then the value of that column. Ex: My pet shop, felicia@email.com, auckland, etc",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "business_name": {
+                                    "type": "string"
+                                },
+                                "specialities": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "phone": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "address": {
+                                    "type": "string"
+                                },
+                                "city": {
+                                    "type": "string"
+                                },
+                                "hours": {
+                                    "type": "string"
+                                },
+                                "imageKey": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "This service allows you to update the information of a clinic based by their id in NZ Veterinary Locum Network"
+                    }
+                }
+            }
+        },
+        "/clinics/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Delete a specific clinic's information based on their id"
+                ],
+                "summary": "Delete a specific clinic's information based on their id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Put the id of the clinic you want to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "This service allows you to delete the information of a clinic based by their id in NZ Veterinary Locum Network"
+                    }
+                }
+            }
+        },
+
+
+
+        "/jobs/all": {
+            "get": {
+                "tags": [
+                    "Get all registered job listing informations"
+                ],
+                "summary": "Get all registered job listing informations",
+                "responses": {
+                    "200": {
+                        "description": "This service allows you to see all job listings in NZ Veterinary Locum Network"
+                    }
+                }
+            }
+        },
+        "/jobs/search/{location}": {
+            "get": {
+                "tags": [
+                    "Search specific job's information based on their location"
+                ],
+                "summary": "Search specific job's information based on their location",
+                "parameters": [
+                    {
+                        "name": "location",
+                        "in": "path",
+                        "description": "Put the location of the job you want to search ex: auckland, northland, dunedin, wellington etc."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "This service allows you to see the information of a job based by their location in NZ Veterinary Locum Network"
+                    }
+                }
+            }
+        },
+        "/jobs/search/id/{jobId}": {
+            "get": {
+                "tags": [
+                    "Search specific job's information based on their individual job id"
+                ],
+                "summary": "Search specific job's information based on their individual job id",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "Put the individual job id of the job you want to search"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "This service allows you to see the information of a job based by their individual job id in NZ Veterinary Locum Network"
+                    }
+                }
+            }
+        },
+        "/jobs/search/clinic/{clinicId}": {
+            "get": {
+                "tags": [
+                    "Search specific job's information based on their clinicId"
+                ],
+                "summary": "Search specific job's information based on their clinicId",
+                "parameters": [
+                    {
+                        "name": "clinicId",
+                        "in": "path",
+                        "description": "Put the clinicId of the job you want to search"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "This service allows you to see the information of a job based by their clinicId in NZ Veterinary Locum Network"
+                    }
+                }
+            }
+        },
+        "/jobs/add": {
+            "post": {
+                "tags": [
+                    "Add new job to the database"
+                ],
+                "summary": "Add new job to the database",
+                "parameters": [
+                    {
+                        "name": "datas",
+                        "in": "body",
+                        "description": "Put the data you want to add. Ex: job_title, descriptionis, email, phone. Ex: Felicia, felicia@email.com, auckland, etc",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "job_title": {
+                                    "type": "string"
+                                },
+                                "specialities": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "phone": {
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "type": "string"
+                                },
+                                "descriptions": {
+                                    "type": "string"
+                                },
+                                "clinic_id": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "This service allows you to add new job to NZ Veterinary Locum Network"
+                    }
+                }
+            }
+        },
+        "/jobs/update/{id}": {
+            "post": {
+                "tags": [
+                    "Update information on a specific job's information based on their id"
+                ],
+                "summary": "Update information on a specific job's information based on their id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Put the id of the job you want to update"
+                    },
+                    {
+                        "name": "datas",
+                        "in": "body",
+                        "description": "Put the column you want to update. Ex: business_name, email, password, and then the value of that column. Ex: My pet shop, felicia@email.com, auckland, etc",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "job_title": {
+                                    "type": "string"
+                                },
+                                "specialities": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "phone": {
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "type": "string"
+                                },
+                                "descriptions": {
+                                    "type": "string"
+                                },
+                                "clinic_id": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "This service allows you to update the information of a job based by their id in NZ Veterinary Locum Network"
+                    }
+                }
+            }
+        },
+        "/jobs/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Delete a specific job's information based on their id"
+                ],
+                "summary": "Delete a specific job's information based on their id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Put the id of the job you want to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "This service allows you to delete the information of a job based by their id in NZ Veterinary Locum Network"
                     }
                 }
             }
         }
-
     }
 }
