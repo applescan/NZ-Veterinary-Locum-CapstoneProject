@@ -31,7 +31,7 @@ filling a specialized need for a distinct sector on the website rather than spec
 
 
 ## Demo
-Here is a working live demo :  https://nz-locum-backend.herokuapp.com/api-docs/
+Here is a working live demo :  http://nzlocumnetwork-env.eba-beqbmmm3.us-east-1.elasticbeanstalk.com/
 
 
 ### Built with
