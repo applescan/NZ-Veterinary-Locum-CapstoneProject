@@ -39,7 +39,6 @@ Here is a working live demo :  https://www.nz-vet-locum.online/api-docs/
 •	AWS Beanstalk
 •	Bcryptjs
 •	Cors
-•	Bcryptjs
 •	Express.js
 •	JavaScript
 •	MongoDB
