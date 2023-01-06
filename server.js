@@ -32,7 +32,7 @@ app.use('/jobs', jobsRoute);
 
 app.get("/", function (req, res) {
   //when we get an http get request to the root/homepage
-  res.send("This is the backend of NZ locum network, check /api-docs to test endpoints");
+  res.send("This is the backend of NZ locum network, go to /api-docs to test endpoints");
 });
 
 app.get("/images/:imageKey", (req, res) => {
