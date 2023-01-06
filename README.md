@@ -31,7 +31,7 @@ filling a specialized need for a distinct sector on the website rather than spec
 
 
 ## Demo
-Here is a working live demo :  http://nzlocumnetwork-env.eba-beqbmmm3.us-east-1.elasticbeanstalk.com/
+Here is a working live demo :  https://www.nz-vet-locum.online/api-docs/
 
 
 ### Built with
