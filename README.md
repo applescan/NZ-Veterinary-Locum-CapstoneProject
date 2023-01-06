@@ -36,11 +36,11 @@ Here is a working live demo :  https://www.nz-vet-locum.online/api-docs/
 
 ### Built with
 •	Axios
+•	AWS Beanstalk
 •	Bcryptjs
 •	Cors
 •	Bcryptjs
 •	Express.js
-•	Heroku
 •	JavaScript
 •	MongoDB
 •	Mongoose
