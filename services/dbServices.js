@@ -71,8 +71,10 @@ async function updateDoctor(req, res) {
         };
 
         //if the req file exist then it will update image key (adding image key to updated data)
-        if (req.file) {
+        if (req.file && req.file.size < 1024000) {
             updatedData.imageKey = req?.file?.filename
+        } else {
+            return res.status(400).json({ msg: "Please upload image file smaller than 1mb" });
         }
 
         //if the req password exist then it will update password (adding password to updated data)
@@ -106,10 +108,16 @@ async function addDoctor(req, res) {
     const salt = await bcrypt.genSalt()
     const hash = await bcrypt.hash(req.body.password, salt)
 
+    //check if image file size is bigger than 1mb
+    let imageKeySize = req?.file?.size
+
     // Check if this user already exisits
     let doctors = await doctorsModels.findOne({ email: req.body.email });
+
     if (doctors) {
         return res.status(400).json({ msg: "This email is already in use. Please use another one." });
+    } else if (imageKeySize > 1024000) {
+        return res.status(400).json({ msg: "Please upload image file smaller than 1mb" });
     } else {
         // Insert the new user data
         doctors = new doctorsModels({
