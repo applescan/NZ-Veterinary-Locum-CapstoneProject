@@ -71,10 +71,8 @@ async function updateClinic(req, res) {
         };
 
         //if the req file exist then it will update image key (adding image key to updated data)
-        if (req.file && req.file.size < 1024000) {
+        if (req.file) {
             updatedData.imageKey = req?.file?.filename
-        } else {
-            return res.status(400).json({ msg: "Please upload image file smaller than 1mb" });
         }
 
         //if the req password exist then it will update password (adding password to updated data)
@@ -97,6 +95,7 @@ async function updateClinic(req, res) {
         res.status(400).json({ message: error.message })
     }
 }
+
 
 //post functions for making a new clinic account
 async function addClinics(req, res) {
