@@ -15,6 +15,9 @@ const fetchJobsFromClinicId = async (req, res) => {
 const deleteJobsId = async (req, res) => {  
     let jobs = await getJobsData.deleteJobsId(req, res)
 }
+const deleteClinicId = async (req, res) => {  
+    let jobs = await getJobsData.deleteClinicId(req, res)
+}
 const updateJob = async (req, res) => {  
     let jobs = await getJobsData.updateJob(req, res)
 }
@@ -28,6 +31,7 @@ module.exports = {
     fetchJobsFromClinicId,
     fetchJobsId,
     deleteJobsId,
+    deleteClinicId,
     updateJob,
     addJobs
 }

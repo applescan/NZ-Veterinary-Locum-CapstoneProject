@@ -659,6 +659,26 @@
                     }
                 }
             }
+        },
+        "/jobs/delete/clinic/{clinicId}": {
+            "delete": {
+                "tags": [
+                    "Delete all jobs based on their clinic id"
+                ],
+                "summary": "Delete all jobs based on their clinic id",
+                "parameters": [
+                    {
+                        "name": "clinicId",
+                        "in": "path",
+                        "description": "Put the id of the clinic's job you want to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "This service allows you to delete the information of a job based by their clinic id in NZ Veterinary Locum Network"
+                    }
+                }
+            }
         }
     }
 }

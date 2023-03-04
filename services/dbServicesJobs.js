@@ -59,6 +59,17 @@ async function deleteJobsId(req, res) {
     }
 }
 
+async function deleteClinicId(req, res) {
+    try {
+        const clinicId = req.params.clinicId;
+        const data = await jobsModels.deleteMany({ clinic_id: clinicId })
+        res.send(`All jobs belongs to clinic id: ${data.clinic_id} has been deleted..`)
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+}
+
 async function updateJob(req, res) {
     try {
         const id = req.params.id;
@@ -100,6 +111,7 @@ module.exports = {
     fetchJobsCity,
     fetchJobsId,
     fetchJobsFromClinicId,
+    deleteClinicId,
     deleteJobsId,
     updateJob,
     addJobs
