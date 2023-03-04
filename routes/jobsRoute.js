@@ -46,6 +46,10 @@ router.delete(`/delete/:id`, function (req, res) {
     jobsController.deleteJobsId(req, res)
 })
 
+router.delete(`/delete/clinic/:clinicId`, function (req, res) {
+    jobsController.deleteClinicId(req, res)
+})
+
 router.post(`/update/:id`, function (req, res) {
     jobsController.updateJob(req, res)
 })

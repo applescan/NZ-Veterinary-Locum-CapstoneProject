@@ -26,7 +26,7 @@ async function fetchJobsCity(req, res) {
 
 async function fetchJobsId(req, res) {
     let jobId = req.params.jobId
-    const jobs = await jobsModels.find({ _id: jobId }) // i for case insensitive
+    const jobs = await jobsModels.find({ _id: jobId }) 
     console.log(jobs)
     try {
         return res.send(jobs)
@@ -38,7 +38,7 @@ async function fetchJobsId(req, res) {
 
 async function fetchJobsFromClinicId(req, res) {
     let clinicId = req.params.clinicId
-    const jobs = await jobsModels.find({ clinic_id: clinicId }) // i for case insensitive
+    const jobs = await jobsModels.find({ clinic_id: clinicId }) 
     console.log(jobs)
     try {
         return res.send(jobs)
@@ -53,6 +53,17 @@ async function deleteJobsId(req, res) {
         const id = req.params.id;
         const data = await jobsModels.findByIdAndDelete(id)
         res.send(`${data.job_title} has been deleted..`)
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+}
+
+async function deleteClinicId(req, res) {
+    try {
+        const clinicId = req.params.clinicId;
+        const data = await jobsModels.deleteMany({ clinic_id: clinicId })
+        res.send(`All jobs belongs to clinic id: ${data.clinic_id} has been deleted..`)
     }
     catch (error) {
         res.status(400).json({ message: error.message })
@@ -101,6 +112,7 @@ module.exports = {
     fetchJobsId,
     fetchJobsFromClinicId,
     deleteJobsId,
+    deleteClinicId,
     updateJob,
     addJobs
 }
