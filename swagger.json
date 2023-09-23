@@ -9,7 +9,7 @@
             "url": "https://opensource.org/licenses/MIT"
         }
     },
-    "host": "www.nz-vet-locum.online",
+    "host": "nz-locum-backend-3a82ed85ab97.herokuapp.com",
     "basePath": "/",
     "tags": [
         {

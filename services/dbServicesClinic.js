@@ -1,5 +1,18 @@
 const clinicsModels = require('../models/clinicsModels.js');
 const bcrypt = require('bcryptjs');
+const cloudinary = require("cloudinary").v2;
+
+async function handleUpload(buffer) {
+    return new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream({
+            resource_type: "auto",
+        }, (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+        }).end(buffer);
+    });
+}
+
 
 //all get functions
 async function fetchClinics(req, res) {
@@ -50,87 +63,54 @@ async function deleteClinicsId(req, res) {
 
 ///put functions
 async function updateClinic(req, res) {
+    const updatedData = { ...req.body }; // Destructure to simplify
 
-    const salt = await bcrypt.genSalt()
-    const hash = await bcrypt.hash(req.body.password, salt)
+    // If an image file is provided in the request, upload to Cloudinary
+    if (req.file) {
+        const result = await handleUpload(req.file.buffer);
+        updatedData.imageKey = result.url;
+    }
+
+    // If a new password is provided in the request, hash it
+    if (req.body.password?.length) {
+        const salt = await bcrypt.genSalt();
+        const hash = await bcrypt.hash(req.body.password, salt);
+        updatedData.password = hash;
+    }
 
     try {
-        const id = req.params.id;
-        const business_name = req?.body?.business_name
-        const specialities = req?.body?.specialities
-        const email = req?.body?.email
-        const phone = req?.body?.phone
-        const address = req?.body?.address
-        const city = req?.body?.city
-        const hours = req?.body?.hours
-
-        const updatedData = {
-            business_name: business_name, specialities: specialities, email: email,
-            phone: phone, address: address, city: city, hours: hours
-
-        };
-
-        //if the req file exist then it will update image key (adding image key to updated data)
-        if (req.file) {
-            updatedData.imageKey = req?.file?.filename
-        }
-
-        //if the req password exist then it will update password (adding password to updated data)
-        if (req.body.password?.length) {
-            const salt = await bcrypt.genSalt()
-            const hash = await bcrypt.hash(req.body.password, salt)
-            updatedData.password = hash
-        }
-
         const options = { new: true };
-
-        const result = await clinicsModels.findByIdAndUpdate(
-            id, updatedData, options
-        )
-
-        res.send(result)
-    }
-    catch (error) {
-        console.log(error)
-        res.status(400).json({ message: error.message })
+        const result = await clinicsModels.findByIdAndUpdate(req.params.id, updatedData, options);
+        res.send(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({ message: error.message });
     }
 }
 
 
 //post functions for making a new clinic account
 async function addClinics(req, res) {
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(req.body.password, salt);
 
-    //bcrypt password hashing
-    //generate and use salt for extra security
-    const salt = await bcrypt.genSalt()
-    const hash = await bcrypt.hash(req.body.password, salt)
+    // If no imageKey is provided in req.body, use the default image URL
+    const imageKey = req.body.imageKey || "https://res.cloudinary.com/dek61sfoh/image/upload/v1695461754/clinicDefault_ymtefd.jpg";
 
-    //check if image file size is bigger than 1mb
-    let imageKeySize = req?.file?.size
-
-    // Check if this user already exisits
     let clinics = await clinicsModels.findOne({ email: req.body.email });
     if (clinics) {
         return res.status(400).json({ msg: "This email is already in use. Please use another one." });
-    } else if (imageKeySize > 1024000) {
-        return res.status(400).json({ msg: "Please upload image file smaller than 1mb" });
     } else {
-        // Insert the new user if they do not exist yet
         clinics = new clinicsModels({
-            business_name: req?.body?.business_name,
-            specialities: req?.body?.specialities,
-            email: req?.body?.email,
-            phone: req?.body?.phone,
+            ...req.body,
             password: hash,
-            address: req?.body?.address,
-            city: req?.body?.city,
-            hours: req?.body?.hours,
-            imageKey: req?.file?.filename || "clinicDefault.jpg"
+            imageKey: imageKey 
         });
         await clinics.save();
         res.send(clinics);
     }
 }
+
 
 //Post request for login
 async function loginClinic(req, res) {

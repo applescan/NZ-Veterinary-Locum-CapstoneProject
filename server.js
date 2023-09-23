@@ -7,10 +7,8 @@ const doctorsRoute = require('./routes/doctorsRoute');
 const clinicsRoute = require('./routes/clinicsRoute');
 const jobsRoute = require('./routes/jobsRoute');
 const cors = require("cors");
-const stream = require('stream');
-const path = require('path');
-const fs = require('fs');
 const dotenv = require('dotenv')
+const cloudinary = require("cloudinary").v2;
 swaggerDocument = require('./swagger.json');
 dotenv.config()
 
@@ -35,27 +33,10 @@ app.get("/", function (req, res) {
   res.send("This is the backend of NZ locum network, go to /api-docs to test endpoints.");
 });
 
-app.get("/images/:imageKey", (req, res) => {
-  const imageKey = req?.params?.imageKey
-  try {
-    const filePath = path.resolve("public", imageKey)
-    const readableStream = fs.createReadStream(filePath)
-    const passThroughStream = new stream.PassThrough()
-    stream.pipeline(
-      readableStream,
-      passThroughStream,
-      (error) => {
-        if (error) {
-          console.log(error)
-          res.status(500).json({ error })
-        }
-      }
-    )
-    passThroughStream.pipe(res)
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({ error })
-  }
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 
 app.listen(port, () => {

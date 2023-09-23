@@ -1,5 +1,19 @@
 const doctorsModels = require('../models/doctorsModels.js');
 const bcrypt = require('bcryptjs');
+const cloudinary = require("cloudinary").v2;
+
+
+async function handleUpload(buffer) {
+    return new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream({
+            resource_type: "auto",
+        }, (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+        }).end(buffer);
+    });
+}
+
 
 // all get functions
 async function fetchDoctors(req, res) {
@@ -51,89 +65,49 @@ async function deleteDoctorsId(req, res) {
 
 ///put functions
 async function updateDoctor(req, res) {
+    const updatedData = {
+        ...req.body // Destructure to simplify
+    };
 
-    try {
-        const id = req.params.id;
-        const first_name = req?.body?.first_name
-        const last_name = req?.body?.last_name
-        const specialities = req?.body?.specialities
-        const email = req?.body?.email
-        const phone = req?.body?.phone
-        const city = req?.body?.city
-        const license = req?.body?.license
-        const availability = req?.body?.availability
-        const work_requirement = req?.body?.work_requirement
-
-        const updatedData = {
-            first_name: first_name, last_name: last_name, specialities: specialities, email: email,
-            phone: phone, city: city, license: license, availability: availability,
-            work_requirement: work_requirement
-        };
-
-        //if the req file exist then it will update image key (adding image key to updated data)
-        if (req.file) {
-            updatedData.imageKey = req?.file?.filename
-        }
-
-        //if the req password exist then it will update password (adding password to updated data)
-        if (req.body.password?.length) {
-            const salt = await bcrypt.genSalt()
-            const hash = await bcrypt.hash(req.body.password, salt)
-            updatedData.password = hash
-        }
-
-        const options = { new: true };
-
-        const result = await doctorsModels.findByIdAndUpdate(
-            id, updatedData, options
-        )
-
-        res.send(result)
+    if (req.file) {
+        const result = await handleUpload(req.file.buffer);
+        updatedData.imageKey = result.url; // Update the Cloudinary URL
     }
-    catch (error) {
-        console.log(error)
-        res.status(400).json({ message: error.message })
+    
+    if (req.body.password?.length) {
+        const salt = await bcrypt.genSalt();
+        const hash = await bcrypt.hash(req.body.password, salt);
+        updatedData.password = hash;
     }
+
+    const options = { new: true };
+    const result = await doctorsModels.findByIdAndUpdate(req.params.id, updatedData, options);
+    res.send(result);
 }
 
 
 //post functions for making a new doctor account
 async function addDoctor(req, res) {
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(req.body.password, salt);
 
-    //bcrypt password hashing
-    //generate and use salt for extra security
-    const salt = await bcrypt.genSalt()
-    const hash = await bcrypt.hash(req.body.password, salt)
+    // If no imageKey is provided in req.body, use the default image URL
+    const imageKey = req.body.imageKey || "https://res.cloudinary.com/dek61sfoh/image/upload/v1695461753/default_mrcmjv.jpg";
 
-    //check if image file size is bigger than 1mb
-    let imageKeySize = req?.file?.size
-
-    // Check if this user already exisits
     let doctors = await doctorsModels.findOne({ email: req.body.email });
-
     if (doctors) {
         return res.status(400).json({ msg: "This email is already in use. Please use another one." });
-    } else if (imageKeySize > 1024000) {
-        return res.status(400).json({ msg: "Please upload image file smaller than 1mb" });
     } else {
-        // Insert the new user data
         doctors = new doctorsModels({
-            first_name: req?.body?.first_name,
-            last_name: req?.body?.last_name,
-            specialities: req?.body?.specialities,
-            email: req?.body?.email,
-            phone: req?.body?.phone,
+            ...req.body, 
             password: hash,
-            city: req?.body?.city,
-            license: req?.body?.license,
-            availability: req?.body?.availability,
-            work_requirement: req?.body?.work_requirement,
-            imageKey: req?.file?.filename || "default.jpg"
+            imageKey: imageKey
         });
         await doctors.save();
         res.send(doctors);
     }
 }
+
 
 //Post request for login
 async function loginDoctor(req, res) {

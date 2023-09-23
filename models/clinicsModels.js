@@ -35,7 +35,7 @@ const clinicsSchema = new mongoose.Schema({
     },
     imageKey: {
         type: String,
-        required: true,
+        required: false,
     }
 });
 const clinics = mongoose.model('cliniccollections', clinicsSchema); //make sure the name for collection to add "s" on mongodb compass and all lowercase
