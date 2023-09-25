@@ -31,7 +31,7 @@ filling a specialized need for a distinct sector on the website rather than spec
 
 
 ## Demo
-Here is a working live demo :  https://www.nz-vet-locum.online/api-docs/
+Here is a working live demo :  https://nz-locum-backend-3a82ed85ab97.herokuapp.com/api-docs/
 
 
 ### Built with
